@@ -32,7 +32,7 @@ class DataSource(object):
         # Extract steering angle, and interpolate right and left camera
         # steering angles.
         center_steering_angles = driving_log['steering'].tolist()
-        right_steering_angles = list(map(lambda x: x + 0.25,
+        right_steering_angles = list(map(lambda x: x - 0.25,
                                          center_steering_angles))
         left_steering_angles = list(map(lambda x: x + 0.25,
                                         center_steering_angles))
