@@ -13,7 +13,7 @@ import pandas
 
 
 class DataSource(object):
-    def __init__(self):
+    def __init__(self, use_auxilary_cameras=False):
         data_path = 'data'
         driving_log_path = os.path.join(data_path, 'driving_log.csv')
         driving_log = pandas.read_csv(driving_log_path)
@@ -38,13 +38,17 @@ class DataSource(object):
                                         center_steering_angles))
 
         # Combine all data.
-        image_paths = center_image_paths + right_image_paths + left_image_paths
-        for path in image_paths:
-            if not os.path.exists(path):
-                raise UserWarning(path)
-        steering_angles = (center_steering_angles +
-                           right_steering_angles +
-                           left_steering_angles)
+        if use_auxilary_cameras:
+            image_paths = (center_image_paths +
+                           right_image_paths +
+                           left_image_paths)
+            steering_angles = (center_steering_angles +
+                               right_steering_angles +
+                               left_steering_angles)
+        else:
+            image_paths = center_image_paths
+            steering_angles = center_steering_angles
+
         image_paths, steering_angles = shuffle(image_paths, steering_angles,
                                                random_state=0)
         (self.train_image_paths,
@@ -165,7 +169,6 @@ def save_model(model):
 
 def main():
     model = build_model()
-    print(model.summary())
     train_model(model)
     save_model(model)
 
